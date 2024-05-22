@@ -1,0 +1,29 @@
+<script setup>
+import Aside from '@/components/Aside.vue'
+import Header from '@/components/Header.vue'
+</script>
+
+<template>
+    <el-container class="main-container">
+        <Aside></Aside>
+        <el-container>
+            <el-header style="display: flex; align-items: center;">
+                <Header></Header>
+            </el-header>
+            <el-main>
+                <router-view />
+            </el-main>
+        </el-container>
+    </el-container>
+</template>
+
+<style scoped>
+.main-container {
+    height: 100vh
+}
+
+.el-main {
+    padding: 0;
+    background-color: #f4f3ef;
+}
+</style>
