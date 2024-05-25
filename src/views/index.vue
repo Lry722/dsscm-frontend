@@ -1,6 +1,9 @@
 <script setup>
 import Aside from '@/components/Aside.vue'
 import Header from '@/components/Header.vue'
+import { provide } from 'vue';
+
+provide('baseURL', 'http://localhost:8080')
 </script>
 
 <template>

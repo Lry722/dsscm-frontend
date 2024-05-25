@@ -1,9 +1,11 @@
 <script setup>
-import { ref, provide, onMounted, watch } from 'vue'
+import { ref, provide, onMounted, watch, inject } from 'vue'
 import axios from 'axios'
 import RoleHeader from '@/components/role/RoleHeader.vue'
 import RoleTable from '@/components/role/RoleTable.vue'
 import RoleEditDialog from '@/components/role/RoleEditDialog.vue'
+
+const URL = inject('baseURL') + '/roles';
 
 const permissionLut = {
     'product': '商品',
@@ -49,7 +51,7 @@ function handleDelete(row) {
 async function sendCreate(newRole) {
     try {
         console.log(newRole)
-        await axios.post('http://localhost:8080/roles', newRole);
+        await axios.post(URL, newRole);
         roles.value.push(newRole);
     } catch (e) {
         console.error(e);
@@ -59,23 +61,26 @@ async function sendCreate(newRole) {
 
 async function sendDelete() {
     try {
-        await axios.delete(`http://localhost:8080/roles/${roles.value[editingRow.value].id}`);
+        await axios.delete(URL, roles.value[editingRow.value].id);
     } catch (e) {
         console.error(e);
     }
     roles.value.splice(editingRow.value, 1);
 }
 
-function sendUpdate(newVal) {
-    // TODO: 发送更新请求
+async function sendUpdate(newVal) {
+    try {
+        await axios.put(URL, newVal)
+    } catch (e) {
+        console.error(e);
+    }
     roles.value[editingRow.value] = JSON.parse(JSON.stringify(newVal));
     editDialogVisible.value = false;
 }
 
 async function sendFetch(name = '') {
     try {
-        // 发送获取请求，携带searchName为参数
-        const response = await axios.get('http://localhost:8080/roles', { params: { name } });
+        const response = await axios.get(URL, { params: { name } });
         roles.value.splice(0, roles.value.length);
         roles.value.push(...response.data.data);
     } catch (e) {
@@ -90,7 +95,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <RoleHeader @add="addDialogVisible = true" @search="name => sendFetch(name)" />
+    <RoleHeader @add="addDialogVisible = true" @search="name => sendFetch(name)"/>
     <el-row>
         <RoleTable @edit="row => handleEdit(row)" @delete="row => handleDelete(row)" :roles="roles" />
     </el-row>
