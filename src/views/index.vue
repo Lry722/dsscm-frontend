@@ -3,14 +3,14 @@ import Aside from '@/components/Aside.vue'
 import Header from '@/components/Header.vue'
 import { provide } from 'vue';
 
-provide('baseURL', 'http://localhost:8080')
+provide('baseURL', 'http://localhost:8081')
 </script>
 
 <template>
     <el-container class="main-container">
         <Aside></Aside>
         <el-container>
-            <el-header style="display: flex; align-items: center;">
+            <el-header>
                 <Header></Header>
             </el-header>
             <el-main>
@@ -22,7 +22,14 @@ provide('baseURL', 'http://localhost:8080')
 
 <style scoped>
 .main-container {
-    height: 100vh
+    height: 100vh;
+}
+
+.el-header {
+    display: flex;
+    align-items: center;
+    height: 66px;
+    border-bottom: 2px solid #e6e6e6;
 }
 
 .el-main {

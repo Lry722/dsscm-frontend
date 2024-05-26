@@ -1,7 +1,7 @@
 <script setup>
-import { computed, inject, ref, watch, watchEffect } from 'vue'
+import { computed, inject } from 'vue'
 
-const { roles } = defineProps({
+const prop = defineProps({
     roles: Array
 })
 
@@ -20,7 +20,7 @@ function valToStr(val) {
 }
 
 const formattedRoles = computed(() => {
-    return roles.map((role) => {
+    return prop.roles.map((role) => {
         return {
             ...role,
             permissions: Object.fromEntries(Object.entries(role.permissions).map(([key, value]) => [key, valToStr(value)]))

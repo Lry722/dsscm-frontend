@@ -1,13 +1,7 @@
 <script setup>
-import { ref } from 'vue'
-import { House, Menu as IconMenu, Message, Setting } from '@element-plus/icons-vue'
+import { useRoute } from 'vue-router'
 
-const item = {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-}
-const tableData = ref(Array.from({ length: 20 }).fill(item))
+const route = useRoute();
 </script>
 
 <template>
@@ -16,7 +10,7 @@ const tableData = ref(Array.from({ length: 20 }).fill(item))
             百货中心供应链管理系统
         </h1>
         <hr style="margin: 20px; border: 1px solid #DCDFE6;">
-        <el-menu :router="true">
+        <el-menu :router="true" :default-active="route.path">
             <el-menu-item index="/">
                 <el-icon>
                     <HomeFilled />

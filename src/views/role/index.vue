@@ -9,8 +9,8 @@ const URL = inject('baseURL') + '/roles';
 
 const permissionLut = {
     'product': '商品',
-    'bill': '账单',
-    'order': '订单',
+    'bill': '采购订单',
+    'order': '销售订单',
     'provider': '供应商',
     'user': '用户',
     'role': '角色',
@@ -50,7 +50,6 @@ function handleDelete(row) {
 
 async function sendCreate(newRole) {
     try {
-        console.log(newRole)
         await axios.post(URL, newRole);
         roles.value.push(newRole);
     } catch (e) {
@@ -95,10 +94,10 @@ onMounted(() => {
 </script>
 
 <template>
-    <RoleHeader @add="addDialogVisible = true" @search="name => sendFetch(name)"/>
-    <el-row>
+    <div class="wrapper">
+        <RoleHeader @add="addDialogVisible = true" @search="name => sendFetch(name)" />
         <RoleTable @edit="row => handleEdit(row)" @delete="row => handleDelete(row)" :roles="roles" />
-    </el-row>
+    </div>
 
     <RoleEditDialog id="editDialog" :role="roles[editingRow]" :visible="editDialogVisible"
         @closed="editDialogVisible = false" @confirmed="newVal => sendUpdate(newVal)" />
@@ -107,7 +106,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.el-row {
-    margin: 15px;
+.wrapper {
+    margin: 0 15px;
+}
+
+.wrapper>* {
+    margin: 15px 0;
 }
 </style>
