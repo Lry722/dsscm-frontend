@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import UserHeader from '@/components/user/UserHeader.vue';
 import UserTable from '@/components/user/UserTable.vue';
+import { ElMessage } from 'element-plus';
 
 const URL = inject('baseURL') + '/users'
 
@@ -43,11 +44,17 @@ function handleDelete(row) {
 
 async function sendDelete() {
     try {
-        await axios.delete(URL, users.value[editingRow.value].id);
+        let resp = await axios.delete(URL + '/' + users.value[editingRow.value].id);
+        if (resp.data = 200) {
+            ElMessage.success('删除成功');
+            users.value.splice(editingRow.value, 1);
+        } else {
+            ElMessage.error('删除失败');
+        }
     } catch (e) {
+        ElMessage.error('删除失败');
         console.error(e);
     }
-    users.value.splice(editingRow.value, 1);
 }
 
 async function fetchUsers(queryParam) {
@@ -69,7 +76,7 @@ onMounted(() => {
 <template>
     <div class="wrapper">
         <UserHeader @add="handleCreate()" @search="queryParam => fetchUsers(queryParam)"></UserHeader>
-        <UserTable :users="users" @edit="row => handleEdit(row)"></UserTable>
+        <UserTable :users="users" @edit="row => handleEdit(row)" @delete="row => handleDelete(row)"></UserTable>
     </div>
 </template>
 

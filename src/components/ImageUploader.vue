@@ -1,46 +1,68 @@
+<script setup>
+import { onMounted, ref, watchEffect } from 'vue'
+import { ElMessage } from 'element-plus'
+import { Plus } from '@element-plus/icons-vue'
+
+const emit = defineEmits(['changed'])
+const props = defineProps({
+  originImage: String
+})
+
+const imageUrl = ref(null)
+const uploadBanner = ref()
+
+const handleChange = (file) => {
+  if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+    ElMessage.error('图片应当是 JPG 或 PNG 格式!')
+    return false
+  } else if (file.size / 1024 / 1024 > 2) {
+    ElMessage.error('图片大小不得超过 2MB!')
+    return false
+  }
+  return true
+}
+
+const handleUpload = (file) => {
+  imageUrl.value = URL.createObjectURL(file.file)
+  emit('changed', file.file)
+}
+
+const clearUploaded = () => {
+  imageUrl.value = null;
+  uploadBanner.value.clearFiles();
+  emit('changed', null);
+};
+
+watchEffect(() => {
+  imageUrl.value = props.originImage
+})
+</script>
+
 <template>
     <el-upload
-      class="avatar-uploader"
-      action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+      class="image-uploader"
+      action="#"
+      :limit="1"
       :show-file-list="false"
-      :on-success="handleAvatarSuccess"
-      :before-upload="beforeAvatarUpload"
+      :http-request="handleUpload"
+      :before-upload="handleChange"
+      accept=".png,.jpe,.jpeg"
+      :disabled="imageUrl != null"
+      ref="uploadBanner"
     >
-      <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+      <img v-if="imageUrl" :src="imageUrl" class="image" />
+      <el-icon v-else class="image-uploader-icon"><Plus /></el-icon>
+      <el-icon
+        v-if="imageUrl"
+        class="logoDelete"
+        @click.stop="clearUploaded">
+        <CircleCloseFilled/>
+      </el-icon>
     </el-upload>
   </template>
   
-  <script lang="ts" setup>
-  import { ref } from 'vue'
-  import { ElMessage } from 'element-plus'
-  import { Plus } from '@element-plus/icons-vue'
-  
-  import type { UploadProps } from 'element-plus'
-  
-  const imageUrl = ref('')
-  
-  const handleAvatarSuccess: UploadProps['onSuccess'] = (
-    response,
-    uploadFile
-  ) => {
-    imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-  }
-  
-  const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
-      ElMessage.error('图片应当是 JPG 或 PNG 格式!')
-      return false
-    } else if (rawFile.size / 1024 / 1024 > 2) {
-      ElMessage.error('图片大小不得超过 2MB!')
-      return false
-    }
-    return true
-  }
-  </script>
-  
   <style scoped>
-  .avatar-uploader .avatar {
+  .image-uploader .image {
     width: 178px;
     height: 178px;
     display: block;
@@ -48,7 +70,7 @@
   </style>
   
   <style>
-  .avatar-uploader .el-upload {
+  .image-uploader .el-upload {
     border: 1px dashed var(--el-border-color);
     border-radius: 6px;
     cursor: pointer;
@@ -57,11 +79,11 @@
     transition: var(--el-transition-duration-fast);
   }
   
-  .avatar-uploader .el-upload:hover {
+  .image-uploader .el-upload:hover {
     border-color: var(--el-color-primary);
   }
   
-  .el-icon.avatar-uploader-icon {
+  .el-icon.image-uploader-icon {
     font-size: 28px;
     color: #8c939d;
     width: 178px;

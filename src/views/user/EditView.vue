@@ -1,12 +1,15 @@
 <script setup>
 import axios from 'axios';
-import { ref, inject, watchEffect, onMounted } from 'vue';
+import { ref, inject, watchEffect, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import locale from 'element-plus/dist/locale/zh-cn.mjs'
 import ImageUploader from '@/components/ImageUploader.vue'
+import { ElMessage } from 'element-plus';
 
 const router = useRouter();
 const route = useRoute();
+
+const URL = inject('baseURL') + '/users';
 
 const genders = [
     { label: '男', value: 'M' },
@@ -16,19 +19,25 @@ const genders = [
 const roles = ref([])
 
 const editingUser = ref({
-    "id": null,
-    "account": "",
-    "roleName": "",
-    "userName": "",
-    "gender": "",
-    "birthday": "",
-    "email": "",
-    "phone": "",
-    "address": "",
-    "description": ""
+    id: null,
+    account: null,
+    password: null,
+    roleName: null,
+    userName: null,
+    gender: null,
+    birthday: null,
+    email: null,
+    phone: null,
+    password: null,
+    address: null,
+    description: null
 });
 
-function cancelEdit() {
+const confirmPassword = ref('');
+const photo = ref(null);
+const photoUrl = ref(null);
+
+function back() {
     router.push({ name: '用户管理' });
 }
 
@@ -36,6 +45,7 @@ async function fetchUser(id) {
     try {
         let resp = await axios.get(inject('baseURL') + '/users/' + id);
         editingUser.value = resp.data.data;
+        photoUrl.value = editingUser.value.photo && URL + '/photo/' + editingUser.value.photo
     } catch (e) {
         console.error(e)
     }
@@ -52,9 +62,56 @@ async function fetchRoles() {
     }
 }
 
+async function handleUpdate() {
+    try {
+        let formData = new FormData();
+        let blob = new Blob([JSON.stringify(editingUser.value)], { type: 'application/json' });
+        formData.append('userInfo', blob);
+        console.log(photo.value);
+        if (photo.value) {
+            formData.append('photo', photo.value);
+        }
+        let resp = await axios.put(URL, formData);
+        if (resp.data.code == 200) {
+            ElMessage.success('修改成功');
+            back();
+        } else {
+            ElMessage.error('网络错误，请稍后再试');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function handleCreate() {
+    if (editingUser.value.password != confirmPassword.value) {
+        ElMessage.error('两次输入的密码不一致');
+        return;
+    }
+    try {
+        let formData = new FormData();
+        let blob = new Blob([JSON.stringify(editingUser.value)], { type: 'application/json' });
+        formData.append('user', blob);
+        if (photo.value) {
+            formData.append('photo', photo.value);
+        }
+        let resp = await axios.post(URL, formData);
+        if (resp.data.code == 200) {
+            ElMessage.success('添加成功');
+            back();
+        } else {
+            ElMessage.error('网络错误，请稍后再试');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 onMounted(() => {
     fetchRoles();
-    fetchUser(route.query.id);
+    if (route.query.id) {
+        fetchUser(route.query.id);
+    }
 })
 </script>
 
@@ -68,12 +125,12 @@ onMounted(() => {
         <el-row>
             <el-col :span="8">
                 <el-form-item label="账号">
-                    <el-input v-model="editingUser.account" readonly size="large" />
+                    <el-input v-model="editingUser.account" size="large" :disabled="editingUser.id != null" />
                 </el-form-item>
             </el-col>
             <el-col :span="8">
                 <el-form-item label="用户名">
-                    <el-input v-model="editingUser.userName" size="large" />
+                    <el-input v-model="editingUser.name" size="large" />
                 </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -95,6 +152,19 @@ onMounted(() => {
             <el-col :span="12">
                 <el-form-item label="电话">
                     <el-input v-model="editingUser.phone" size="large" />
+                </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row v-if="editingUser.id == null">
+            <el-col :span="12">
+                <el-form-item label="密码">
+                    <el-input v-model="editingUser.password" size="large" />
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="确认密码">
+                    <el-input v-model="confirmPassword" size="large" />
                 </el-form-item>
             </el-col>
         </el-row>
@@ -124,14 +194,13 @@ onMounted(() => {
                     </el-select>
                 </el-form-item>
             </el-col>
-
-
         </el-row>
+
         <el-row>
             <el-col :span="8">
                 <el-form-item label="照片">
-                    <ImageUploader />
-                </el-form-item>>
+                    <ImageUploader @changed="newPhoto => photo = newPhoto" :origin-image="photoUrl" />
+                </el-form-item>
             </el-col>
             <el-col :span="16">
                 <el-form-item label="简介">
@@ -139,16 +208,19 @@ onMounted(() => {
                 </el-form-item>
             </el-col>
         </el-row>
+
         <el-row>
             <el-col :span="3" :offset="18">
                 <el-form-item>
-                    <el-button v-if="editingUser?.id" type="primary" @click="saveUser" size="large" style="width: 100%;">保存</el-button>
-                    <el-button v-else type="primary" @click="createUser" size="large" style="width: 100%;">创建</el-button>
+                    <el-button v-if="editingUser?.id" type="primary" @click="handleUpdate" size="large"
+                        style="width: 100%;">保存</el-button>
+                    <el-button v-else type="primary" @click="handleCreate" size="large"
+                        style="width: 100%;">创建</el-button>
                 </el-form-item>
             </el-col>
             <el-col :span="3">
                 <el-form-item>
-                    <el-button type="danger" @click="cancelEdit" size="large" style="width: 100%;">取消</el-button>
+                    <el-button type="danger" @click="back" size="large" style="width: 100%;">取消</el-button>
                 </el-form-item>
             </el-col>
         </el-row>
