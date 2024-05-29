@@ -1,5 +1,4 @@
 <script setup>
-import axios from 'axios';
 import { inject, onMounted, ref } from 'vue';
 
 const emit = defineEmits(['add', 'search']);
