@@ -1,6 +1,7 @@
 <script setup>
-import axios from 'axios';
-import { ref, inject, watchEffect, onMounted, computed } from 'vue';
+import service from '@/axios';
+import { baseURL } from '@/axios';
+import { ref, watchEffect, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import locale from 'element-plus/dist/locale/zh-cn.mjs'
 import ImageUploader from '@/components/ImageUploader.vue'
@@ -9,7 +10,7 @@ import { ElMessage } from 'element-plus';
 const router = useRouter();
 const route = useRoute();
 
-const URL = inject('baseURL') + '/users';
+const URL = '/users';
 
 const genders = [
     { label: '男', value: 'M' },
@@ -30,7 +31,6 @@ const emptyUser = {
     gender: null,
     birthday: null,
     email: null,
-    phone: null,
     password: null,
     address: null,
     description: null
@@ -42,17 +42,18 @@ function emailValidator(rule, value, callback) {
     if (value.length > 0 && !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)) {
         callback(new Error('邮箱地址格式不正确'))
     }
+    callback()
 }
 
 function passwordValidator(rule, value, callback) {
-    console.log(value);
     if (value.length < 6 || value.length > 16) {
         callback(new Error('密码长度应为 6 到 16 个字符'))
     } else {
         if (editingUser.value.checkPassword) {
-            userFormRef?.value.validateField('checkPassword')
+            userFormRef?.value.validateField('checkPassword', callback)
+        } else {
+            callback()
         }
-        callback()
     }
 }
 
@@ -88,7 +89,7 @@ const rules = {
     ]
 }
 
-const photo = ref(null);
+const photo = ref(new File([new Blob()], 'emptyfile.txt', {type: 'text/plain'}));
 const photoUrl = ref(null);
 
 function back() {
@@ -97,9 +98,9 @@ function back() {
 
 async function fetchUser(id) {
     try {
-        let resp = await axios.get(inject('baseURL') + '/users/' + id);
+        let resp = await service.get('/users/' + id);
         editingUser.value = resp.data.data;
-        photoUrl.value = editingUser.value.photo && URL + '/photo/' + editingUser.value.photo
+        photoUrl.value = baseURL + URL + '/photo/' + editingUser.value.id
     } catch (e) {
         console.error(e)
     }
@@ -107,7 +108,7 @@ async function fetchUser(id) {
 
 async function fetchRoles() {
     try {
-        let resp = await axios.get(inject('baseURL') + '/roles');
+        let resp = await service.get('/roles');
         roles.value.slice(1);
         roles.value.push(...resp.data.data);
     }
@@ -124,8 +125,8 @@ function handleClear() {
     }
 }
 
-async function handleUpdate() {
-    if (!userFormRef?.valid) {
+async function handleUpdate(valid) {
+    if (!valid) {
         ElMessage.error('请正确填写信息！');
         return;
     }
@@ -137,7 +138,7 @@ async function handleUpdate() {
         if (photo.value) {
             formData.append('photo', photo.value);
         }
-        let resp = await axios.put(URL, formData);
+        let resp = await service.put(URL, formData);
         if (resp.data.code == 200) {
             ElMessage.success('修改成功');
             back();
@@ -149,8 +150,8 @@ async function handleUpdate() {
     }
 }
 
-async function handleCreate() {
-    if (!userFormRef?.valid) {
+async function handleCreate(valid) {
+    if (!valid) {
         ElMessage.error('请正确填写信息！');
         return;
     }
@@ -161,7 +162,7 @@ async function handleCreate() {
         if (photo.value) {
             formData.append('photo', photo.value);
         }
-        let resp = await axios.post(URL, formData);
+        let resp = await service.post(URL, formData);
         if (resp.data.code == 200) {
             ElMessage.success('添加成功');
             back();
@@ -182,7 +183,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <el-form class="wrapper" label-position="top" :rules="rules" :model="editingUser" :ref="userFormRef">
+    <el-form class="wrapper" label-position="top" :rules="rules" :model="editingUser" ref="userFormRef">
         <el-form-item>
             <h2 v-if="editingUser?.id">修改用户信息 <el-text type="info">Edit User Infomation</el-text></h2>
             <h2 v-else>新增用户信息 <el-text type="info">Add User Infomation</el-text></h2>
@@ -247,7 +248,7 @@ onMounted(() => {
             <el-col :span="12">
                 <el-config-provider :locale="locale">
                     <el-form-item label="出生日期" prop="birthday">
-                        <el-date-picker v-model="editingUser.birthday" type="date" size="large"
+                        <el-date-picker v-model="editingUser.birthday" type="date" value-format="YYYY-MM-DD" size="large"
                             style="width: 100%;"></el-date-picker>
                     </el-form-item>
                 </el-config-provider>
@@ -281,9 +282,9 @@ onMounted(() => {
             </el-col>
             <el-col :span="3" :offset="15">
                 <el-form-item>
-                    <el-button v-if="editingUser?.id" type="primary" @click="handleUpdate" size="large"
+                    <el-button v-if="editingUser?.id" type="primary" @click="userFormRef.validate(handleUpdate)" size="large"
                         style="width: 100%;">保存</el-button>
-                    <el-button v-else type="primary" @click="handleCreate" size="large"
+                    <el-button v-else type="primary" @click="userFormRef.validate(handleCreate)" size="large"
                         style="width: 100%;">创建</el-button>
                 </el-form-item>
             </el-col>

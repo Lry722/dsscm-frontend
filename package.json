@@ -13,6 +13,7 @@
     "axios": "^1.7.0",
     "element-plus": "^2.7.3",
     "vue": "^3.4.21",
+    "vue-cookies": "^1.8.4",
     "vue-router": "^4.3.0",
     "vuex": "^4.0.2"
   },

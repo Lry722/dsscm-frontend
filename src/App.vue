@@ -1,15 +1,13 @@
 <script setup>
 import MainView from '@/views/index.vue'
 import LoginView from '@/views/login/index.vue'
-import { useStore } from 'vuex';
-import { provide } from 'vue';
+import store from './store';
 
-provide('baseURL', 'http://localhost:8081')
 </script>
 
 <template>
-  <!-- <MainView></MainView> -->
-  <LoginView></LoginView>
+  <MainView v-if="store.state.logged"></MainView>
+  <LoginView v-if="!store.state.logged"></LoginView>
 </template>
 
 <style scoped>

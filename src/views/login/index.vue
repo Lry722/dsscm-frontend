@@ -1,8 +1,9 @@
 <script setup>
 import service from '@/axios';
-import { inject, ref } from 'vue'
+import { ref } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus';
+import store from '@/store';
 
 const URL = '/login';
 
@@ -22,14 +23,14 @@ async function handleSubmit() {
     }
     try {
         const resp = await service.post(URL, form.value)
-        console.log(resp.data)
         if (resp.data.code === 200) {
             ElMessage.success('登陆成功')
+            store.commit('login')
         } else {
             ElMessage.error(resp.data.msg)
         }
     } catch (e) {
-        console.log(e)
+        console.error(e)
     }
 } 
 </script>

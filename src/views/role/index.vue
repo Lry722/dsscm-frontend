@@ -1,11 +1,11 @@
 <script setup>
-import { ref, provide, onMounted, watch, inject } from 'vue'
-import axios from 'axios'
+import { ref, provide, onMounted } from 'vue'
+import service from '@/axios'
 import RoleHeader from '@/components/role/RoleHeader.vue'
 import RoleTable from '@/components/role/RoleTable.vue'
 import RoleEditDialog from '@/components/role/RoleEditDialog.vue'
 
-const URL = inject('baseURL') + '/roles';
+const URL = '/roles';
 
 const permissionLut = {
     'product': '商品',
@@ -50,7 +50,7 @@ function handleDelete(row) {
 
 async function sendCreate(newRole) {
     try {
-        await axios.post(URL, newRole);
+        await service.post(URL, newRole);
         roles.value.push(newRole);
     } catch (e) {
         console.error(e);
@@ -60,7 +60,7 @@ async function sendCreate(newRole) {
 
 async function sendDelete() {
     try {
-        await axios.delete(URL, roles.value[editingRow.value].id);
+        await service.delete(URL, roles.value[editingRow.value].id);
     } catch (e) {
         console.error(e);
     }
@@ -69,7 +69,7 @@ async function sendDelete() {
 
 async function sendUpdate(newVal) {
     try {
-        await axios.put(URL, newVal)
+        await service.put(URL, newVal)
     } catch (e) {
         console.error(e);
     }
@@ -79,7 +79,7 @@ async function sendUpdate(newVal) {
 
 async function sendFetch(name = '') {
     try {
-        const response = await axios.get(URL, { params: { name } });
+        const response = await service.get(URL, { params: { name } });
         roles.value.splice(0, roles.value.length);
         roles.value.push(...response.data.data);
     } catch (e) {

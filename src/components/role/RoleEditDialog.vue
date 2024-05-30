@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, inject, watchEffect } from 'vue'
+import { ref, inject, watchEffect } from 'vue'
 import PermissionsEditTable from './PermissionsEditTable.vue'
 
 const emit = defineEmits(['closed', 'confirmed'])

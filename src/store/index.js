@@ -1,14 +1,21 @@
 import { createStore } from 'vuex'
+import vueCookies from 'vue-cookies'
 
 const store = createStore({
   state () {
     return {
-      count: 0
+      logged: vueCookies.isKey('token'),
+      userId: vueCookies.get('userId'),
     }
   },
   mutations: {
-    increment (state) {
-      state.count++
+    login (state) {
+      state.logged = true
+      state.userId = vueCookies.get('userId')
+    },
+    logout (state) {
+      state.logged = false
+      state.userId = null
     }
   }
 })

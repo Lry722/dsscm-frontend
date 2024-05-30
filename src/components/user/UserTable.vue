@@ -1,10 +1,12 @@
 <script setup>
 import { computed, inject } from 'vue'
 
-const emit = defineEmits(['edit', 'delete'])
+const emit = defineEmits(['edit', 'delete', 'pageChanged'])
 
 const prop = defineProps({
-    users: Array
+    users: Array,
+    pageCount: Number,
+    pageSize: Number,
 })
 
 const roles = inject('roles');
@@ -15,7 +17,6 @@ function calculateAge(birthdayString) {
     var currentYear = today.getFullYear();
     var birthYear = birthday.getFullYear();
     var age = currentYear - birthYear;
-    // 如果今年还没过生日，年龄需要减一
     if (today.getMonth() < birthday.getMonth() ||
         (today.getMonth() === birthday.getMonth() && today.getDate() < birthday.getDate())) {
         age--;
@@ -43,7 +44,7 @@ const formattedUsers = computed(() => {
         <el-table-column prop="gender" label="性别" />
         <el-table-column prop="age" label="年龄" />
         <el-table-column prop="phone" label="电话" />
-        <el-table-column prop="role" label="角色" />
+        <el-table-column prop="role" label="身份" />
         <el-table-column label="操作">
             <template #default="scope">
                 <el-button size="small" @click="emit('edit', scope.$index)">
@@ -54,11 +55,19 @@ const formattedUsers = computed(() => {
                 </el-button>
             </template>
         </el-table-column>
+
+        <template #append>
+            <el-pagination background layout="prev, pager, next" :total="pageCount" :page-size="pageSize" @current-change="page => emit('pageChanged', page)"/>
+        </template>
     </el-table>
 </template>
 
 <style scoped>
 .el-table {
     border-radius: 5px;
+}
+.el-pagination {
+    margin: 20px;
+    justify-content: right;
 }
 </style>
