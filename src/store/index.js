@@ -1,23 +1,26 @@
-import { createStore } from 'vuex'
-import vueCookies from 'vue-cookies'
+import { createStore } from "vuex";
+import vueCookies from "vue-cookies";
 
 const store = createStore({
-  state () {
+  state() {
     return {
-      logged: vueCookies.isKey('token'),
-      userId: vueCookies.get('userId'),
-    }
+      logged: vueCookies.isKey("token"),
+      userId: vueCookies.get("userId"),
+      userName: vueCookies.get("userName"),
+    };
   },
   mutations: {
-    login (state) {
-      state.logged = true
-      state.userId = vueCookies.get('userId')
+    login(state) {
+      state.userId = vueCookies.get("userId");
+      state.userName = vueCookies.get("userName");
+      state.logged = true;
     },
-    logout (state) {
-      state.logged = false
-      state.userId = null
-    }
-  }
-})
+    logout(state) {
+        vueCookies.remove("token");
+        state.logged = false;
+        state.userId = null;
+    },
+  },
+});
 
-export default store
+export default store;

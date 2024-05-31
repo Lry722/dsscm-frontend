@@ -15,7 +15,7 @@ const searchName = ref('');
             <el-input v-model="searchName" placeholder="按名称查找" @keyup.enter.native="emit('search', searchName)"></el-input>
         </el-col>
         <el-col :span="2" justify-content="center">
-            <el-button id="search" type="primary" @click="emit('search', searchName)">搜索</el-button>
+            <el-button id="search" icon="Search" type="primary" @click="emit('search', searchName)">搜索</el-button>
         </el-col>
     </el-row>
 </template>

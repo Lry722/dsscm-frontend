@@ -3,9 +3,9 @@ import { computed, inject } from 'vue'
 
 const emit = defineEmits(['edit', 'delete', 'pageChanged'])
 
-const prop = defineProps({
+const props = defineProps({
     users: Array,
-    pageCount: Number,
+    total: Number,
     pageSize: Number,
 })
 
@@ -25,7 +25,7 @@ function calculateAge(birthdayString) {
 }
 
 const formattedUsers = computed(() => {
-    return prop.users.map(user => {
+    return props.users.map(user => {
         return {
             ...user,
             role: roles.value.find(role => role.id === user.role)?.name,
@@ -57,7 +57,7 @@ const formattedUsers = computed(() => {
         </el-table-column>
 
         <template #append>
-            <el-pagination background layout="prev, pager, next" :total="pageCount" :page-size="pageSize" @current-change="page => emit('pageChanged', page)"/>
+            <el-pagination background layout="prev, pager, next" :total="props.total" :page-size="pageSize" @current-change="page => emit('pageChanged', page)"/>
         </template>
     </el-table>
 </template>

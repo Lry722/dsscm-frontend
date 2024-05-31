@@ -65,7 +65,7 @@ const roles = inject('roles');
             </el-select>
         </el-col>
         <el-col :span="2">
-            <el-button id="search" type="primary" @click="emit('search', searchParam)">搜索</el-button>
+            <el-button id="search" icon="Search" type="primary" @click="emit('search', searchParam)">搜索</el-button>
         </el-col>
     </el-row>
 </template>

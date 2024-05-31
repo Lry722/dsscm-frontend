@@ -134,7 +134,6 @@ async function handleUpdate(valid) {
         let formData = new FormData();
         let blob = new Blob([JSON.stringify(editingUser.value)], { type: 'application/json' });
         formData.append('userInfo', blob);
-        console.log(photo.value);
         if (photo.value) {
             formData.append('photo', photo.value);
         }

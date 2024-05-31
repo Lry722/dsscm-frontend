@@ -1,10 +1,11 @@
 <script setup>
-import { ref, provide, onMounted, watchEffect, watch } from 'vue'
+import { ref, provide, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import service from '@/axios'
 import UserHeader from '@/components/user/UserHeader.vue';
 import UserTable from '@/components/user/UserTable.vue';
 import { ElMessage } from 'element-plus';
+import { debounce } from 'lodash'
 
 const router = useRouter();
 
@@ -29,19 +30,17 @@ async function fetchRoles() {
 const users = ref([])
 const editingRow = ref(0);
 
-const pageNum = ref(1);
-const pageSize = ref(5);
 const pageCount = ref(0);
 
-watch(pageNum, async () => {
-    try {
-        fetchUsers();
-        let resp = await service.get(URL + '/count');
-        pageCount.value = resp.data.data;
-    } catch (e) {
-        console.error(e);
-    }
-}, { immediate: true })
+const queryParam = ref({
+    name: '',
+    minAge: '',
+    maxAge: '',
+    gender: '',
+    role: '',
+    pageNum: 1,
+    pageSize: 5
+})
 
 function handleCreate() {
     router.push({ name: '用户编辑' })
@@ -71,15 +70,20 @@ async function sendDelete() {
     }
 }
 
-async function fetchUsers(queryParam) {
+async function fetchUsers() {
     try {
-        const response = await service.get(URL, { params: { ...queryParam, pageNum: pageNum.value, pageSize: pageSize.value } });
+        const resp = await service.get(URL, { params: { ... queryParam.value } });
         users.value.splice(0, users.value.length);
-        users.value.push(...response.data.data);
+        users.value.push(...resp.data.data.data);
+        pageCount.value = resp.data.data.count;
     } catch (e) {
         console.error(e);
     }
 }
+
+watch(queryParam, () => {
+    fetchUsers();
+}, { deep: true })
 
 onMounted(() => {
     fetchRoles();
@@ -89,8 +93,9 @@ onMounted(() => {
 
 <template>
     <div class="wrapper">
-        <UserHeader @add="handleCreate()" @search="queryParam => fetchUsers(queryParam)"></UserHeader>
-        <UserTable :users="users" :page-count="pageCount" :page-size="pageSize" @edit="row => handleEdit(row)" @delete="row => handleDelete(row)" @pageChanged="newPageNum => pageNum = newPageNum"></UserTable>
+        <UserHeader @add="handleCreate()" @search="searchParam => queryParam = {...queryParam, ...searchParam}"></UserHeader>
+        <UserTable :users="users" :total="pageCount" :page-size="queryParam.pageSize" @edit="row => handleEdit(row)"
+            @delete="row => handleDelete(row)" @pageChanged="newPageNum => queryParam.pageNum = newPageNum"></UserTable>
     </div>
 </template>
 
