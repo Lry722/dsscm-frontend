@@ -11,7 +11,7 @@ const props = defineProps({
 
 const categories = inject('categories')
 
-function flattenObject({ id, name, parent, children }, result = []) {
+function flattenObject({ id, name, children }, result = []) {
     result.push([id, name]);
 
     children?.forEach(child => {
@@ -48,29 +48,29 @@ const formattedProducts = computed(() => {
 
 <template>
     <el-table :data="formattedProducts" stripe style="width: 100%;">
-        <el-table-column prop="id" label="商品编号" />
+        <el-table-column prop="id" label="商品编号" width="100"/>
         <el-table-column prop="name" label="商品名称" />
-        <el-table-column prop="price" label="单价" />
+        <el-table-column prop="price" label="单价" :formatter="(product) => '￥'+product.price"/>
         <el-table-column prop="placement" label="摆放位置" />
         <el-table-column prop="categoryLevel1" label="一级分类" />
         <el-table-column prop="categoryLevel2" label="二级分类" />
         <el-table-column prop="categoryLevel3" label="三级分类" />
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="200">
             <template #default="scope">
-                <el-button size="small" @click="emit('inspect', scope.$index)">
+                <el-button size="small" plain @click="emit('inspect', scope.$index)">
                     查看
                 </el-button>
-                <el-button size="small" @click="emit('edit', scope.$index)">
+                <el-button size="small" plain type="warning" @click="emit('edit', scope.$index)">
                     编辑
                 </el-button>
-                <el-button size="small" type="danger" @click="emit('delete', scope.$index)">
+                <el-button size="small" plain type="danger" @click="emit('delete', scope.$index)">
                     删除
                 </el-button>
             </template>
         </el-table-column>
 
         <template #append>
-            <el-pagination background layout="prev, pager, next" :total="props.total" :page-size="pageSize"
+            <el-pagination background layout="prev, pager, next" :total="props.total" :page-size="props.pageSize"
                 @current-change="page => emit('pageChanged', page)" />
         </template>
     </el-table>

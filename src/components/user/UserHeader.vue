@@ -3,7 +3,7 @@ import { inject, onMounted, ref } from 'vue';
 
 const emit = defineEmits(['add', 'search']);
 
-const searchParam = ref({
+const searchParams = ref({
     name: '',
     minAge: '',
     maxAge: '',
@@ -13,8 +13,8 @@ const searchParam = ref({
 
 const genders = [
     { label: '-', value: '' },
-    { label: '男', value: 'M' },
-    { label: '女', value: 'F' }
+    { label: '男', value: '0' },
+    { label: '女', value: '1' }
 ]
 
 const roles = inject('roles');
@@ -29,7 +29,7 @@ const roles = inject('roles');
             <el-text>用户名</el-text>
         </el-col>
         <el-col :span="2">
-            <el-input v-model="searchParam.name" @keyup.enter.native="emit('search', searchName)"></el-input>
+            <el-input v-model="searchParams.name" @keyup.enter.native="emit('search', searchParams)"></el-input>
         </el-col>
         <el-col :span="1">
             <el-text>年龄</el-text>
@@ -37,13 +37,13 @@ const roles = inject('roles');
         <el-col :span="2">
             <el-row>
                 <el-col :span="10">
-                    <el-input v-model="searchParam.minAge" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                    <el-input v-model="searchParams.minAge" oninput="value=value.replace(/[^\d]/g,'')" @keyup.enter.native="emit('search', searchParams)"></el-input>
                 </el-col>
                 <el-col :span="4">
                     <el-text type="info">-</el-text>
                 </el-col>
                 <el-col :span="10">
-                    <el-input v-model="searchParam.maxAge" oninput="value=value.replace(/[^\d]/g,'')"></el-input>
+                    <el-input v-model="searchParams.maxAge" oninput="value=value.replace(/[^\d]/g,'')" @keyup.enter.native="emit('search', searchParams)"></el-input>
                 </el-col>
             </el-row>
         </el-col>
@@ -51,7 +51,7 @@ const roles = inject('roles');
             <el-text>性别</el-text>
         </el-col>
         <el-col :span="2">
-            <el-select v-model="searchParam.gender" placeholder="-">
+            <el-select v-model="searchParams.gender" placeholder="-">
                 <el-option v-for="item in genders" :key="item.value" :label="item.label"
                     :value="item.value"></el-option>
             </el-select>
@@ -60,12 +60,12 @@ const roles = inject('roles');
             <el-text>角色</el-text>
         </el-col>
         <el-col :span="2">
-            <el-select v-model="searchParam.role" placeholder="-">
+            <el-select v-model="searchParams.role" placeholder="-">
                 <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
         </el-col>
         <el-col :span="2">
-            <el-button id="search" icon="Search" type="primary" @click="emit('search', searchParam)">搜索</el-button>
+            <el-button id="search" icon="Search" type="primary" @click="emit('search', searchParams)">搜索</el-button>
         </el-col>
     </el-row>
 </template>

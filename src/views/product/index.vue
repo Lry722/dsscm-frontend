@@ -1,12 +1,14 @@
 <script setup>
-import { ref, provide, onMounted } from 'vue'
+import { ref, provide, onMounted, watch } from 'vue'
 import service from '@/axios';
 import ProductHeader from "@/components/product/ProductHeader.vue"
 import ProductTable from "@/components/product/ProductTable.vue"
+import { ElMessage } from 'element-plus';
 
 const categories = ref(null)
 provide('categories', categories)
 
+const total = ref(0)
 const products = ref([])
 const queryParams = ref({
     pageNum: 1,
@@ -22,14 +24,31 @@ async function fetchCategories() {
     }
 }
 
-async function fetchProducts() {
+async function deleteProduct(row) {
     try {
-        let resp = await service.get('/products', { params: { ...queryParams.value } })
-        products.value = resp.data.data
+        let resp = await service.delete(`/products/${products.value[row].id}`)
+        if (resp.data.code === 200) {
+            ElMessage.success('删除成功');
+            fetchProducts();
+        }
     } catch (e) {
         console.error(e)
     }
 }
+
+async function fetchProducts() {
+    try {
+        let resp = await service.get('/products', { params: { ...queryParams.value } })
+        products.value = resp.data.data.data
+        total.value = resp.data.data.total
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+watch(queryParams, () => {
+    fetchProducts();
+}, { deep: true })
 
 onMounted(async () => {
     fetchCategories()
@@ -39,8 +58,9 @@ onMounted(async () => {
 
 <template>
     <div class="wrapper">
-        <ProductHeader />
-        <ProductTable :products="products" />
+        <ProductHeader @search="(searchParams) => { queryParams = { ...queryParams, ...searchParams } }" />
+        <ProductTable :products="products" :total="total" :page-size="queryParams.pageSize" @delete="deleteProduct"
+            @pageChanged="(page) => queryParams.pageNum = page" />
     </div>
 
 </template>

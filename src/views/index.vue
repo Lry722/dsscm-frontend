@@ -3,6 +3,13 @@ import Aside from '@/components/Aside.vue'
 import Header from '@/components/Header.vue'
 import { provide } from 'vue';
 
+provide('genders', [
+    { label: '男', value: '0' },
+    { label: '女', value: '1' }
+])
+
+
+
 </script>
 
 <template>

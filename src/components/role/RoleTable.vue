@@ -32,15 +32,14 @@ const formattedRoles = computed(() => {
 
 <template>
     <el-table :data="formattedRoles" stripe style="width: 100%;">
-        <el-table-column prop="name" label="名称" />
-        <el-table-column v-for="(value, key) in permissionLut" :key="key" :prop="'permissions.' + key" :label="value"
-            width="120" />
-        <el-table-column label="操作">
+        <el-table-column prop="name" label="名称" width="200" />
+        <el-table-column v-for="(value, key) in permissionLut" :key="key" :prop="'permissions.' + key" :label="value" />
+        <el-table-column label="操作" width="140">
             <template #default="scope">
-                <el-button size="small" @click="emit('edit', scope.$index)">
+                <el-button size="small" plain type="warning" @click="emit('edit', scope.$index)">
                     编辑
                 </el-button>
-                <el-button size="small" type="danger" @click="emit('delete', scope.$index)">
+                <el-button size="small" plain type="danger" @click="emit('delete', scope.$index)">
                     删除
                 </el-button>
             </template>

@@ -30,9 +30,9 @@ async function fetchRoles() {
 const users = ref([])
 const editingRow = ref(0);
 
-const pageCount = ref(0);
+const total = ref(0);
 
-const queryParam = ref({
+const queryParams = ref({
     name: '',
     minAge: '',
     maxAge: '',
@@ -72,16 +72,16 @@ async function sendDelete() {
 
 async function fetchUsers() {
     try {
-        const resp = await service.get(URL, { params: { ... queryParam.value } });
+        const resp = await service.get(URL, { params: { ... queryParams.value } });
         users.value.splice(0, users.value.length);
         users.value.push(...resp.data.data.data);
-        pageCount.value = resp.data.data.count;
+        total.value = resp.data.data.total;
     } catch (e) {
         console.error(e);
     }
 }
 
-watch(queryParam, () => {
+watch(queryParams, () => {
     fetchUsers();
 }, { deep: true })
 
@@ -93,9 +93,9 @@ onMounted(() => {
 
 <template>
     <div class="wrapper">
-        <UserHeader @add="handleCreate()" @search="searchParam => queryParam = {...queryParam, ...searchParam}"></UserHeader>
-        <UserTable :users="users" :total="pageCount" :page-size="queryParam.pageSize" @edit="row => handleEdit(row)"
-            @delete="row => handleDelete(row)" @pageChanged="newPageNum => queryParam.pageNum = newPageNum"></UserTable>
+        <UserHeader @add="handleCreate()" @search="searchParam => queryParams = {...queryParams, ...searchParam}"></UserHeader>
+        <UserTable :users="users" :total="total" :page-size="queryParams.pageSize" @edit="row => handleEdit(row)"
+            @delete="row => handleDelete(row)" @pageChanged="newPageNum => queryParams.pageNum = newPageNum"></UserTable>
     </div>
 </template>
 
