@@ -12,6 +12,11 @@ const route = useRoute();
 
 const URL = '/users';
 
+const genders = [
+    { label: '男', value: '0' },
+    { label: '女', value: '1' }
+]
+
 const roles = ref([])
 
 const userFormRef = ref(null);
