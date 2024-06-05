@@ -80,7 +80,6 @@ const route = useRoute();
 .el-aside h1 {
     color: #303133;
     text-align: center;
-    padding: 15px 0 0;
     font-size: 18px;
 }
 

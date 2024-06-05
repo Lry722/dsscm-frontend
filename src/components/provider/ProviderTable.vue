@@ -10,7 +10,7 @@ const props = defineProps({
 
 <template>
     <el-table :data="data" stripe style="width: 100%;">
-        <el-table-column prop="code" label="供应商编码" width="100"/>
+        <el-table-column prop="code" label="供应商编码" width="100" />
         <el-table-column prop="name" label="供应商名称" />
         <el-table-column prop="contact" label="联系人" />
         <el-table-column prop="phone" label="联系电话" />

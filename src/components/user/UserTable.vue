@@ -39,7 +39,7 @@ const formattedUsers = computed(() => {
 
 <template>
     <el-table :data="formattedUsers" stripe style="width: 100%;">
-        <el-table-column prop="account" label="账号" width="200"/>
+        <el-table-column prop="account" label="账号" width="200" />
         <el-table-column prop="name" label="用户名" />
         <el-table-column prop="gender" label="性别" />
         <el-table-column prop="age" label="年龄" />
@@ -57,7 +57,8 @@ const formattedUsers = computed(() => {
         </el-table-column>
 
         <template #append>
-            <el-pagination background layout="prev, pager, next" :total="props.total" :page-size="props.pageSize" @current-change="page => emit('pageChanged', page)"/>
+            <el-pagination background layout="prev, pager, next" :total="props.total" :page-size="props.pageSize"
+                @current-change="page => emit('pageChanged', page)" />
         </template>
     </el-table>
 </template>
@@ -66,6 +67,7 @@ const formattedUsers = computed(() => {
 .el-table {
     border-radius: 5px;
 }
+
 .el-pagination {
     margin: 20px;
     justify-content: right;

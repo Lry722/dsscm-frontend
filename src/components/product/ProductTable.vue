@@ -48,9 +48,9 @@ const formattedProducts = computed(() => {
 
 <template>
     <el-table :data="formattedProducts" stripe style="width: 100%;">
-        <el-table-column prop="id" label="商品编号" width="100"/>
+        <el-table-column prop="id" label="商品编号" width="100" />
         <el-table-column prop="name" label="商品名称" />
-        <el-table-column prop="price" label="单价" :formatter="(product) => '￥'+product.price"/>
+        <el-table-column prop="price" label="单价" :formatter="(product) => '￥' + product.price" />
         <el-table-column prop="placement" label="摆放位置" />
         <el-table-column prop="categoryLevel1" label="一级分类" />
         <el-table-column prop="categoryLevel2" label="二级分类" />

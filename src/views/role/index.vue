@@ -49,42 +49,34 @@ function handleDelete(row) {
 }
 
 async function sendCreate(newRole) {
-    try {
-        await service.post(URL, newRole);
-        roles.value.push(newRole);
-    } catch (e) {
-        console.error(e);
-    }
+
+    await service.post(URL, newRole);
+    roles.value.push(newRole);
+
     addDialogVisible.value = false;
 }
 
 async function sendDelete() {
-    try {
-        await service.delete(URL, roles.value[editingRow.value].id);
-    } catch (e) {
-        console.error(e);
-    }
+
+    await service.delete(URL, roles.value[editingRow.value].id);
+
     roles.value.splice(editingRow.value, 1);
 }
 
 async function sendUpdate(newVal) {
-    try {
-        await service.put(URL, newVal)
-    } catch (e) {
-        console.error(e);
-    }
+
+    await service.put(URL, newVal)
+
     roles.value[editingRow.value] = JSON.parse(JSON.stringify(newVal));
     editDialogVisible.value = false;
 }
 
 async function sendFetch(name = '') {
-    try {
-        const response = await service.get(URL, { params: { name } });
-        roles.value.splice(0, roles.value.length);
-        roles.value.push(...response.data.data);
-    } catch (e) {
-        console.error(e);
-    }
+
+    const response = await service.get(URL, { params: { name } });
+    roles.value.splice(0, roles.value.length);
+    roles.value.push(...response.data.data);
+
 }
 
 onMounted(() => {

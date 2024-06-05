@@ -1,10 +1,8 @@
-import "./assets/main.css";
-
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import vueCookies from 'vue-cookies'
+import vueCookies from "vue-cookies";
 
 import ElementPlus from "element-plus";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";

@@ -48,14 +48,16 @@ function handleProductSelect(item) {
         </el-col>
         <el-col :span="2">
             <el-autocomplete v-model="productName" :fetch-suggestions="queryProductSearch" value-key="name" clearable
-                @select="handleProductSelect" @clear="searchParams.product = null" @keyup.enter.native="emit('search', searchParams)" />
+                @select="handleProductSelect" @clear="searchParams.product = null"
+                @keyup.enter.native="emit('search', searchParams)" />
         </el-col>
         <el-col :span="2">
             <el-text>供应商</el-text>
         </el-col>
         <el-col :span="3">
             <el-autocomplete v-model="providerName" :fetch-suggestions="queryProviderSearch" value-key="name" clearable
-                @select="handleProviderSelect" @clear="searchParams.provider = null" @keyup.enter.native="emit('search', searchParams)" />
+                @select="handleProviderSelect" @clear="searchParams.provider = null"
+                @keyup.enter.native="emit('search', searchParams)" />
         </el-col>
         <el-col :span="2">
             <el-text>付款状态</el-text>

@@ -107,9 +107,10 @@ const paymentTypeDict = {
 }
 
 img {
-  width: 160px;
-  height: 90px;
-  object-fit: contain; /* 或 cover, depending on your needs */
-  object-position: 0%;
+    width: 160px;
+    height: 90px;
+    object-fit: contain;
+    /* 或 cover, depending on your needs */
+    object-position: 0%;
 }
 </style>

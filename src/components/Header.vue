@@ -54,9 +54,9 @@ const greet = computed(() => {
                 <template #dropdown>
                     <el-dropdown-menu>
                         <el-dropdown-item icon="User">个人中心</el-dropdown-item>
-                        <el-dropdown-item icon="Message">消息</el-dropdown-item>
-                        <el-dropdown-item icon="Setting">设置</el-dropdown-item>
-                        <el-dropdown-item icon="ArrowLeft" @click="store.commit('logout')">退出</el-dropdown-item>
+                        <el-dropdown-item icon="Message">消息查看</el-dropdown-item>
+                        <el-dropdown-item icon="Setting">设置密码</el-dropdown-item>
+                        <el-dropdown-item icon="ArrowLeft" @click="store.commit('logout')">退出登陆</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>

@@ -25,8 +25,8 @@ const formmatedData = computed(() => props.data.map(entry => ({
     <el-table :data="formmatedData" stripe style="width: 100%;">
         <el-table-column prop="code" label="订单编码" width="100" />
         <el-table-column prop="product" label="商品名称" />
-        <el-table-column prop="provider" label="供应商"/>
-        <el-table-column prop="totalPrice" label="订单金额" :formatter="(bill) => '￥' + bill.totalPrice"/>
+        <el-table-column prop="provider" label="供应商" />
+        <el-table-column prop="totalPrice" label="订单金额" :formatter="(bill) => '￥' + bill.totalPrice" />
         <el-table-column prop="paid" label="付款状态" />
         <el-table-column prop="creationTime" label="创建时间" />
         <el-table-column label="操作" width="200">

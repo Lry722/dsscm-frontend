@@ -74,7 +74,7 @@ const rules = {
         { min: 2, max: 10, message: "用户名长度应为 2 到 16 个字", trigger: ["change", "blur"] }
     ],
     email: [
-        { validator: emailValidator, trigger: 'blur'}
+        { validator: emailValidator, trigger: 'blur' }
     ],
     password: [
         { required: true, message: "请输入密码", trigger: "blur" },
@@ -89,7 +89,7 @@ const rules = {
     ]
 }
 
-const photo = ref(new File([new Blob()], 'emptyfile.txt', {type: 'text/plain'}));
+const photo = ref(new File([new Blob()], 'emptyfile.txt', { type: 'text/plain' }));
 const photoUrl = ref(null);
 
 function back() {
@@ -97,24 +97,17 @@ function back() {
 }
 
 async function fetchUser(id) {
-    try {
-        let resp = await service.get('/users/' + id);
-        editingUser.value = resp.data.data;
-        photoUrl.value = baseURL + URL + '/photo/' + editingUser.value.id
-    } catch (e) {
-        console.error(e)
-    }
+    let resp = await service.get('/users/' + id);
+    editingUser.value = resp.data;
+    photoUrl.value = baseURL + URL + '/photo/' + editingUser.value.id
 }
 
 async function fetchRoles() {
-    try {
-        let resp = await service.get('/roles');
-        roles.value.slice(1);
-        roles.value.push(...resp.data.data);
-    }
-    catch (e) {
-        console.error(e);
-    }
+
+    let resp = await service.get('/roles');
+    roles.value.slice(1);
+    roles.value.push(...resp.data);
+
 }
 
 function handleClear() {
@@ -130,23 +123,17 @@ async function handleUpdate(valid) {
         ElMessage.error('请正确填写信息！');
         return;
     }
-    try {
-        let formData = new FormData();
-        let blob = new Blob([JSON.stringify(editingUser.value)], { type: 'application/json' });
-        formData.append('userInfo', blob);
-        if (photo.value) {
-            formData.append('photo', photo.value);
-        }
-        let resp = await service.put(URL, formData);
-        if (resp.data.code == 200) {
-            ElMessage.success('修改成功');
-            back();
-        } else {
-            ElMessage.error('网络错误，请稍后再试');
-        }
-    } catch (e) {
-        console.error(e);
+
+    let formData = new FormData();
+    let blob = new Blob([JSON.stringify(editingUser.value)], { type: 'application/json' });
+    formData.append('userInfo', blob);
+    if (photo.value) {
+        formData.append('photo', photo.value);
     }
+    let resp = await service.put(URL, formData);
+
+    ElMessage.success('修改成功');
+    back();
 }
 
 async function handleCreate(valid) {
@@ -154,23 +141,18 @@ async function handleCreate(valid) {
         ElMessage.error('请正确填写信息！');
         return;
     }
-    try {
-        let formData = new FormData();
-        let blob = new Blob([JSON.stringify(editingUser.value)], { type: 'application/json' });
-        formData.append('user', blob);
-        if (photo.value) {
-            formData.append('photo', photo.value);
-        }
-        let resp = await service.post(URL, formData);
-        if (resp.data.code == 200) {
-            ElMessage.success('添加成功');
-            back();
-        } else {
-            ElMessage.error('网络错误，请稍后再试');
-        }
-    } catch (e) {
-        console.error(e);
+
+    let formData = new FormData();
+    let blob = new Blob([JSON.stringify(editingUser.value)], { type: 'application/json' });
+    formData.append('user', blob);
+    if (photo.value) {
+        formData.append('photo', photo.value);
     }
+    let resp = await service.post(URL, formData);
+
+    ElMessage.success('添加成功');
+    back();
+
 }
 
 onMounted(() => {
@@ -247,8 +229,8 @@ onMounted(() => {
             <el-col :span="12">
                 <el-config-provider :locale="locale">
                     <el-form-item label="出生日期" prop="birthday">
-                        <el-date-picker v-model="editingUser.birthday" type="date" value-format="YYYY-MM-DD" size="large"
-                            style="width: 100%;"></el-date-picker>
+                        <el-date-picker v-model="editingUser.birthday" type="date" value-format="YYYY-MM-DD"
+                            size="large" style="width: 100%;"></el-date-picker>
                     </el-form-item>
                 </el-config-provider>
             </el-col>
@@ -281,8 +263,8 @@ onMounted(() => {
             </el-col>
             <el-col :span="3" :offset="15">
                 <el-form-item>
-                    <el-button v-if="editingUser?.id" type="primary" @click="userFormRef.validate(handleUpdate)" size="large"
-                        style="width: 100%;">保存</el-button>
+                    <el-button v-if="editingUser?.id" type="primary" @click="userFormRef.validate(handleUpdate)"
+                        size="large" style="width: 100%;">保存</el-button>
                     <el-button v-else type="primary" @click="userFormRef.validate(handleCreate)" size="large"
                         style="width: 100%;">创建</el-button>
                 </el-form-item>

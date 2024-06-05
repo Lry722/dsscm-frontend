@@ -37,13 +37,15 @@ const roles = inject('roles');
         <el-col :span="2">
             <el-row>
                 <el-col :span="10">
-                    <el-input v-model="searchParams.minAge" oninput="value=value.replace(/[^\d]/g,'')" @keyup.enter.native="emit('search', searchParams)"></el-input>
+                    <el-input v-model="searchParams.minAge" oninput="value=value.replace(/[^\d]/g,'')"
+                        @keyup.enter.native="emit('search', searchParams)"></el-input>
                 </el-col>
                 <el-col :span="4">
                     <el-text type="info">-</el-text>
                 </el-col>
                 <el-col :span="10">
-                    <el-input v-model="searchParams.maxAge" oninput="value=value.replace(/[^\d]/g,'')" @keyup.enter.native="emit('search', searchParams)"></el-input>
+                    <el-input v-model="searchParams.maxAge" oninput="value=value.replace(/[^\d]/g,'')"
+                        @keyup.enter.native="emit('search', searchParams)"></el-input>
                 </el-col>
             </el-row>
         </el-col>

@@ -39,8 +39,8 @@ watchEffect(async () => {
     let resp = await service.get(props.originImage, {
       responseType: "blob",
     });
-    if (resp.data.size) {
-      imageUrl.value = URL.createObjectURL(resp.data);
+    if (resp.size) {
+      imageUrl.value = URL.createObjectURL(resp);
     } else {
       imageUrl.value = null
     }
@@ -66,6 +66,7 @@ watchEffect(async () => {
   width: 178px;
   height: 178px;
   display: block;
+  object-fit: contain;
 }
 </style>
 

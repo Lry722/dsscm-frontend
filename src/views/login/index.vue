@@ -21,17 +21,12 @@ async function handleSubmit() {
         ElMessage.error('密码不能为空')
         return
     }
-    try {
-        const resp = await service.post(URL, form.value)
-        if (resp.data.code === 200) {
-            ElMessage.success('登陆成功')
-            store.commit('login')
-        } else {
-            ElMessage.error(resp.data.msg)
-        }
-    } catch (e) {
-        console.error(e)
-    }
+
+    const resp = await service.post(URL, form.value)
+
+    ElMessage.success('登陆成功')
+    store.commit('login')
+
 } 
 </script>
 

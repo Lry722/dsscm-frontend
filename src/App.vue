@@ -10,6 +10,8 @@ import store from './store';
   <LoginView v-if="!store.state.logged"></LoginView>
 </template>
 
-<style scoped>
-
+<style>
+:root {
+  --wrapper-margin: 25px
+}
 </style>

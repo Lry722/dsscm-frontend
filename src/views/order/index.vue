@@ -13,26 +13,19 @@ const queryParams = ref({
 })
 
 async function deleteData(row) {
-    try {
-        let resp = await service.delete(`/orders/${data.value[row].id}`)
-        if (resp.data.code === 200) {
-            ElMessage.success('删除成功');
-            fetchData();
-        }
-    } catch (e) {
-        console.error(e)
-    }
+
+    let resp = await service.delete(`/orders/${data.value[row].id}`)
+    ElMessage.success('删除成功');
+    fetchData();
+
 }
 
 async function fetchData() {
-    try {
-        let resp = await service.get('/orders', { params: { ...queryParams.value } })
-        data.value = resp.data.data.data
-        total.value = resp.data.data.total
-        console.log(data.value)
-    } catch (e) {
-        console.error(e)
-    }
+
+    let resp = await service.get('/orders', { params: { ...queryParams.value } })
+    data.value = resp.data.data
+    total.value = resp.data.total
+
 }
 
 watch(queryParams, () => {
@@ -49,6 +42,8 @@ onMounted(async () => {
         <OrderHeader @search="(searchParams) => { queryParams = { ...queryParams, ...searchParams } }" />
         <el-divider />
         <OrderCard v-for="(item, index) in data" :key="index" :data="item" @delete="deleteData(index)" />
+        <el-pagination background layout="prev, pager, next" :total="total" :page-size="queryParams.pageSize"
+            @current-change="page => queryParams.pageNum = page" />
     </div>
 </template>
 
@@ -59,5 +54,10 @@ onMounted(async () => {
 
 .wrapper>* {
     margin: 15px 0;
+}
+
+.el-pagination {
+    justify-content: flex-end;
+    margin: 20px;
 }
 </style>

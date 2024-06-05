@@ -1,7 +1,10 @@
 <script setup>
 import { computed, inject, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['add', 'search']);
+
+const router = useRouter();
 
 const searchParams = ref({
     name: null,
@@ -16,7 +19,7 @@ const categories = inject('categories');
         <el-col :span="2">
             <el-button id="new-role" @click="emit('add')">新增商品</el-button>
         </el-col>
-        <el-col :span="2" :offset="12">
+        <el-col :span="2" :offset="10">
             <el-text>商品名</el-text>
         </el-col>
         <el-col :span="2">
@@ -32,7 +35,11 @@ const categories = inject('categories');
             </el-select>
         </el-col>
         <el-col :span="2">
-            <el-button id="search" icon="Search" type="primary" @click="emit('search', searchParams)">搜索</el-button>
+            <el-button id="search" icon="Search" type="primary" @click="emit('search', searchParams)"> 搜索 </el-button>
+        </el-col>
+        <el-col :span="2">
+            <el-button id="viewCategories" type="primary" plain
+                @click="router.push('/product/category')">商品分类</el-button>
         </el-col>
     </el-row>
 </template>

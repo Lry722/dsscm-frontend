@@ -16,9 +16,9 @@ const store = createStore({
       state.logged = true;
     },
     logout(state) {
-        vueCookies.remove("token");
-        state.logged = false;
-        state.userId = null;
+      vueCookies.remove("token");
+      state.logged = false;
+      state.userId = null;
     },
   },
 });
